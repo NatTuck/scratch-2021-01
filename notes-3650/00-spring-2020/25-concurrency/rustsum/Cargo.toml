@@ -1,0 +1,6 @@
+[package]
+name = "rustsum"
+version = "0.1.0"
+authors = ["Nat Tuck <nat@ferrus.net>"]
+
+[dependencies]

@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <title>JavaScript Concurrency</title>
+</head>
+<body>
+  <script>
+   //alert("browsers run initial code synchronously");
+  </script>
+
+  <p id="demo">Hello, Page</p>
+
+  <p><button id="foo-btn">Foo</button></p>
+  <p><button id="bar-btn">Bar</button></p>
+  <p><button id="fib-btn">Fib 42</button></p>
+  <p><button id="seq-btn">Seq 5</button></p>
+
+  <script>
+   function click_foo() {
+     let demo = document.getElementById('demo');
+     demo.innerHTML = "foo!";
+   }
+
+   let fooBtn = document.getElementById('foo-btn');
+   fooBtn.addEventListener('click', click_foo);
+
+   function click_bar() {
+     window.setTimeout(function() {
+       let demo = document.getElementById('demo');
+       demo.innerHTML = "bar!";
+     }, 2000);
+   }
+
+   let barBtn = document.getElementById('bar-btn');
+   barBtn.addEventListener('click', click_bar);
+
+   function fib(x) {
+     if (x < 2) {
+       return 1;
+     }
+     else {
+       return fib(x - 1) + fib(x - 2);
+     }
+   }
+
+   let fibBtn = document.getElementById('fib-btn');
+   fibBtn.addEventListener('click', function() {
+     let demo = document.getElementById('demo');
+     demo.innerHTML = fib(42);
+   });
+
+   function seq(k) {
+     let demo = document.getElementById('demo');
+     demo.innerHTML = k;
+     window.setTimeout(function() {
+       if (k > 0) {
+         seq(k-1);
+       }
+     }, 1000);
+   }
+
+   let seqBtn = document.getElementById('seq-btn');
+   seqBtn.addEventListener('click', function() {
+     seq(5);
+   });
+  </script>
+</body>
+</html>
