@@ -22,11 +22,10 @@ What is web development?
 
 Key Element: HTTP
 
-(Note: You might say that a browser was the key element. I'd claim that
-laving a program on a server contact a remote HTTP API is still web dev.)
+(Note: You might say that a browser was the key element. I'd claim that a
+non-browser program contact a remote HTTP API is still web dev.)
 
-
-## Web Devlopment
+## Web Development
 
 Frequently: Building web sites using "Web Technologies".
 
@@ -43,7 +42,7 @@ Example: Google Search
    - A web crawling bot
    - Is a HTTP *client*
    - Needs to *parse* HTML / CSS / some JavaScript
- - Index / Data Stoer
+ - Index / Data Store
    - Big, custom data base and/or filesystem
    - A bunch of programs that maintain the data and indexes
    - This is still part of the "web app" that is Google Search.
@@ -85,14 +84,14 @@ The overall plan:
 
 ## The Syllabus
 
- - Course web site / syllabus: http://khoury.neu.edu/~ntuck & click 
- - Bottlenose / Piazza
- - My lecture notes
+ - Course web site / syllabus: https://ntuck-neu.site/ & click 
+ - Inkfish / Piazza
+ - Scratch repo
  - TA office hours
  - Schedule: 
-   - HW or Project Work Every Week, due Thursday
-   - First hw due *this Thursday*.
- - Assigments only: No Exams
+   - HW or Project Work Every Week, due Friday
+   - First hw due *this Friday*.
+ - Assignments only: No Exams
  - No text book
  - Domain Name & VPS
    - We're doing ops ourselves...
@@ -105,7 +104,7 @@ The overall plan:
  - Grading: Homework, two projects, no exams.
  - Assignments required: Three zeros is an F.
  - Grade Challenges
- - Plagarism
+ - Plagiarism
 
 ## Why our own servers?
 
@@ -117,7 +116,9 @@ The overall plan:
 
 ## HW1: Hosting a Static Web Site
 
-First, pull up the assignment on Bottlenose.
+First, pull up the assignment on Inkfish.
+
+Homework is due *Friday*.
 
 ### Initial stuff
 
@@ -127,13 +128,12 @@ First, pull up the assignment on Bottlenose.
   - Set an SSH key
   - (you can generate a key with "ssh-keygen -t rsa")
 - I've already registered a domain and set up a server.
-  - Point it (including www.) to the VPS's IP addr
   
 ### Set up the server
  
 **First, secure the server.**
 
-- Log in to the server (ssh root@ironbeard.com)
+- Log in to the server (ssh root@demo.ironbeard.com)
 - Enable the software firewall
 
 ```
