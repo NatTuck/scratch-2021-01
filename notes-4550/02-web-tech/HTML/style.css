@@ -1,0 +1,10 @@
+
+h1 { text-decoration: underline }
+
+.red-text { color: red }
+
+#input-p {
+    border: thin solid green;
+    width: 40%;
+    padding: 1rem;
+}

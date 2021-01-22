@@ -1,6 +1,3 @@
-+++
-title = "Lecture 2: Some History"
-+++
 
 ## First: HW Questions
 
@@ -190,8 +187,6 @@ ia64 even though x86 is sometimes called ia32) processor:
    - 8 new general purpose registers were added: %r9, %r10, ..., %r15
 
 ## add1 again
-
-(grab the asm from last class)
 
 Argument registers: The convention for AMD64 Linux assembly is to pass
 arguments in registers: %rdi, %rsi, %rdx, %rcx, %r8, %r9, ...stack
