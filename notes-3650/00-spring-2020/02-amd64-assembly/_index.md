@@ -1,6 +1,8 @@
-+++
-title = "./02-amd64-assembly/notes.md"
-+++
+
+Class Blocks:
+
+ - 1:35-3:15pm
+ - 3:25-5:05pm
 
 ## First: HW Questions
 
@@ -99,7 +101,7 @@ $ gcc -no-pie -o ifact ifact.s
 
 ## idiv example
 
-```
+```asm
 .global main
 .text
 main:
