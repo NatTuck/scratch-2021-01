@@ -16,3 +16,4 @@ for my $file (@files) {
         system(qq{rm "$file"});
     }
 }
+
