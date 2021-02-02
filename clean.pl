@@ -5,7 +5,7 @@ use warnings FATAL => 'all';
 my @files = `find . -type f`;
 
 for my $file (@files) {
-    $file =~ /^.git/ && next;
+    $file =~ /^(\.\/)?.git/ && next;
 
     chomp $file;
     my $type = `file "$file"`;
