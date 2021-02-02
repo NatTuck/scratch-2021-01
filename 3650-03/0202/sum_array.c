@@ -1,0 +1,46 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <alloca.h>
+
+long
+sum_array(long* xs, long nn)
+{
+    long yy = 0;
+    for (long ii = 0; ii < nn; ++ii) {
+        yy += xs[ii];
+    }
+    return yy;
+}
+
+int
+main(int argc, char* argv[])
+{
+    if (argc != 2) {
+        puts("Wrong");
+        return 1;
+    }
+
+    long nn = atol(argv[1]);
+
+    //long xs[nn]; // This is a "new" C feature, introduced
+                   // in the 1999 C standard.
+                   // This allocates the array on the stack.
+    long* xs = alloca(nn * sizeof(long));
+
+    for (long ii = 0; ii < nn; ++ii) {
+        long count = scanf("%ld", &(xs[ii]));
+        if (count != 1) { abort(); }
+    }
+
+    printf("Sum = %ld\n", sum_array(xs, nn));
+
+    return 0;
+}
+
+// C Standards:
+//  - Traditional "K&R" C is weird looking.
+//  - ANSI C was standardized in 1989.
+//  - People thought C would never change.
+//  - There was another C standard in 1999
+//  - But some compiler vendors ignored it until like 2012
