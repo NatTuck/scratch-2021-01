@@ -6,6 +6,9 @@ my @files = `find . -type f`;
 
 for my $file (@files) {
     $file =~ /^(\.\/)?.git/ && next;
+    $file =~ /node_modules/ && next;
+    $file =~ /deps/ && next;
+    $file =~ /_build/ && next;
 
     chomp $file;
     my $type = `file "$file"`;
