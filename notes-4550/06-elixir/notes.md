@@ -1,7 +1,3 @@
-+++
-title = "./04-elixir-phoenix/notes.md"
-+++
-
 ## Elixir Language
 
 Erlang: Designed for telecom switches, which require reliability and
@@ -61,8 +57,8 @@ But with some extra features not in ISL:
 
 ```
 # clone git repo
-$ git clone https://github.com/NatTuck/elixir-practice.git
-$ cd elixir-practice
+$ git clone http://github.com/NatTuck/cs4550-hw04.git
+$ cd cs4550-hw04
 
 # fetch deps
 $ mix deps.get
@@ -128,7 +124,19 @@ The deployment documentation:
  - https://hexdocs.pm/distillery/guides/phoenix\_walkthrough.html
  - https://github.com/phoenixframework/phoenix/blob/master/guides/deployment/deployment.md
 
-## Tick Example
+## Adding a New Form / Function 
 
- - See Tick example.
+Need to add the following pieces:
+
+ - Form on the main page
+ - Route
+ - Controller action
+ - Template
+ - Implementation
+ - Test
+
+Example functionality:
+
+ - Input: x
+ - Ouput: All prime numbers up to x
 
