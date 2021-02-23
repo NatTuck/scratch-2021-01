@@ -1,0 +1,3 @@
+ran echo
+In child, to stdout
+ran echo

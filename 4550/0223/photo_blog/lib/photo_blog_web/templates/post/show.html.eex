@@ -1,0 +1,9 @@
+
+<p>
+<span><%= link "Edit", to: Routes.post_path(@conn, :edit, @post) %></span>
+<span><%= link "Back", to: Routes.post_path(@conn, :index) %></span>
+</p>
+
+<h1>Show Post</h1>
+
+<p><%= @post.body %></p>
