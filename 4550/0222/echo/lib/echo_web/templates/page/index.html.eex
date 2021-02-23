@@ -1,0 +1,7 @@
+<section class="row">
+  <article class="column">
+    <p><input type="text" id="input"></p>
+    <p><button id="btn">Echo</button></p>
+    <p id="output">&nbsp;</p>
+  </article>
+</section>
