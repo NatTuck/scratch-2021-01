@@ -1,0 +1,18 @@
+<h1>Show Comment</h1>
+
+<ul>
+
+  <li>
+    <strong>Body:</strong>
+    <%= @comment.body %>
+  </li>
+
+  <li>
+    <strong>Vote:</strong>
+    <%= @comment.vote %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.comment_path(@conn, :edit, @comment) %></span>
+<span><%= link "Back", to: Routes.comment_path(@conn, :index) %></span>
