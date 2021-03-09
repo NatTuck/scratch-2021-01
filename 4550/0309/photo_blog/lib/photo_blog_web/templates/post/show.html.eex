@@ -1,0 +1,39 @@
+
+<p>
+  <%= if current_user_is?(@conn, @post.user_id) do %>
+    <span><%= link "Edit", to: Routes.post_path(@conn, :edit, @post) %></span>
+  <% end %>
+<span><%= link "Back", to: Routes.post_path(@conn, :index) %></span>
+</p>
+
+<h1>Show Post</h1>
+
+<div>
+  <img
+    src="<%= Routes.post_path(@conn, :photo, @post) %>"
+    alt="">
+</div>
+
+<p><%= @post.body %></p>
+
+<h2>Add Comment</h2>
+
+<%= if have_current_user?(@conn) do %>
+  <%= render(
+    PhotoBlogWeb.CommentView,
+    "form.html",
+    changeset: @new_comment,
+    action: Routes.comment_path(@conn, :create)
+  ) %>
+<% end %>
+
+<h2>Comments</h2>
+
+<%= for comm <- @post.comments do %>
+  <div class="card">
+    <div class="card-body">
+      <p>Posted by <%= comm.user.name %></p>
+      <p class="card-text"><%= comm.body %></p>
+    </div>
+  </div>
+<% end %>

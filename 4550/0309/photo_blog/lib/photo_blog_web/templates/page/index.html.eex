@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="column">
+    <h1>Photo Feed</h1>
+  </div>
+</div>
+
+<%= if have_current_user?(@conn) do %>
+  <p>
+    <%= link("New Post",
+      to: Routes.post_path(@conn, :new)) %>
+  </p>
+<% end %>
+
+<div class="row posts-container">
+  <%= for post <- @posts do %>
+    <div class="col-sm-4 card post-card"
+         data-post-id="<%= post.id %>">
+      <% src = Routes.post_path(@conn, :photo, post) %>
+      <img class="card-img-top"
+           src="<%= src %>"
+           alt="">
+      <div class="card-body">
+        <p class="card-text">
+          Posted by <%= post.user.name %>
+        </p>
+        <p class="card-text"><%= post.body %></p>
+        <%= link(
+              "view",
+              to: Routes.post_path(@conn, :show, post)
+            ) %>
+        <p>
+          Votes:
+          <span class="post-score">
+            <%= post.score %>
+          </span>
+          <button class="upvote">&#128077;</button>
+          <button class="downvote">&#128078;</button>
+        </p>
+      </div>
+    </div>
+  <% end %>
+</div>
