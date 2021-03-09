@@ -1,8 +1,10 @@
+---
+layout: default
+---
+
 ## First Thing
 
-Homework Questions
-
-## Finish Up AJAX example.
+Project questions?
 
 ## Web APIs
 
@@ -163,8 +165,6 @@ Setting this app up to use the Github API:
  - Developer Settings
  - New OAuth App
  - Fill out the form
-   - Metadata
-   - Issues: R&W
 
 This gets us to the app page, where we get two things:
 

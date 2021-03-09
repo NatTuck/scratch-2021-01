@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>JS and DOM Demo</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>JS and DOM Demo 2</h1>
+    <p id="hello">...</p>
+
+<script>
+  //alert("Scripts execute in order, blocking page rendering.");
+</script>
+
+    <button onclick="alert('clicked button');">Click me</button>
+    <button id="button2">Button 2</button>
+
+    <script src="code.js"></script>
+    <script>
+     function showPopup() {
+       alert("clicked button 2");
+     }
+
+     var btn = document.getElementById("button2");
+     btn.onclick = showPopup;
+    </script>
+
+<a href="http://google.com/" id="link1">Click Me</a>
+<script>
+  function showPopup2(ev) {
+    ev.preventDefault();
+    alert("clicked link1");
+  }
+  var link1 = document.getElementById("link1");
+  link1.onclick = showPopup2;
+</script>
+
+<p><button id="button3">Button 3</button>
+<p id="b3text">Button 3 text</p>
+<script>
+  var b3p = document.getElementById("b3text");
+  function changeTextBack() {
+    b3p.innerText = "Button 3 text"; 
+  }
+
+  function changeText() {
+    b3p.innerText = "some other text";
+    window.setTimeout(changeTextBack, 2000);
+  }
+
+  var btn3 = document.getElementById("button3");
+  btn3.addEventListener("click", changeText);
+</script>
+
+  </body>
+</html>

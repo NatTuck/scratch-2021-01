@@ -1,0 +1,152 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>3D Canvas Example</title>
+</head>
+<body>
+  <h1>3D Canvas Example</h1>
+
+  <canvas id="demo" width="800" height="600">
+    <p>This will show if browser doesn't canvas.</p>
+  </canvas>
+
+  <!-- shaders are written the OpenGL Shader language, GLSL -->
+  <!-- GLSL is kind of like C, but with built-in vector support -->
+  <!-- The shader code will run on the GPU -->
+
+  <!-- The vertex shader runs once for each vertex (corner of our triangle. -->
+  <script id="vs" type="text/x-shader">
+   #version 300 es
+
+   in vec4 posn;
+
+   void main() {
+     gl_Position = posn;
+   }
+  </script>
+
+  <script id="fs" type="text/x-shader">
+   #version 300 es
+
+   precision mediump float;
+
+   uniform vec4 color_in;
+
+   out vec4 color;
+
+   void main() {
+     color = color_in;
+   }
+  </script>
+
+  <script>
+   var canvas = document.getElementById('demo');
+   var ctx = canvas.getContext('webgl2');
+
+   function compile(gl, type, id) {
+     // Code is actually compiled at runtime in the browser.
+     // This leaves open neat opportunities for generating shaders
+     // as your program runs.
+     let src = document.getElementById(id).innerText.replace(/^\s+/, '');
+     var shader = gl.createShader(type);
+     gl.shaderSource(shader, src);
+     gl.compileShader(shader);
+
+     // Disadvantage to JIT from source: We get compile errors now.
+     var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+     if (success) {
+       return shader;
+     }
+     console.log(gl.getShaderInfoLog(shader));
+     gl.deleteShader(shader);
+   }
+
+   function build_shaders(gl) {
+     let pgm = gl.createProgram();
+     gl.attachShader(pgm, compile(gl, gl.VERTEX_SHADER, 'vs'));
+     gl.attachShader(pgm, compile(gl, gl.FRAGMENT_SHADER, 'fs'));
+     gl.linkProgram(pgm);
+     var success = gl.getProgramParameter(pgm, gl.LINK_STATUS);
+     if (success) {
+       return pgm;
+     }
+     console.log(gl.getProgramInfoLog(pgm));
+     gl.deleteProgram(pgm);
+     return undefined;
+   }
+
+   function main() {
+     // This part is just like a 2D canvas.
+     var canvas = document.getElementById('demo');
+     var gl = canvas.getContext('webgl2');
+     if (!gl) {
+       return;
+     }
+
+     // webgl2 is based on OpenGL ES, which requires an explicit
+     // shader program. 
+     let pgm = build_shaders(gl);
+     if (!pgm) {
+       return;
+     }
+
+     gl.useProgram(pgm);
+
+     // Run draw every 33ms to render frames.
+     window.setInterval(() => draw(gl, pgm), 33);
+
+     console.log("done");
+   }
+
+   function draw(gl, pgm) {
+     let pulse = (new Date().getTime() % 1000) / 1000.0;
+
+     // Default x and y coordinates are normalized to (-1, 1).
+     // This will describe a triangle in the top right corner.
+     let points = [
+       0.0, 0.0,
+       0.0, pulse, // start with 0.0, 0.5,
+       0.5, 0.0,
+     ];
+
+     // We're doing all the work in JS rather than in shaders - we'd want to
+     // avoid that if we wanted decent performance on a larger example.
+
+     // OpenGL wants an C-style array of 32-bit floats, not a JavaScript
+     // object representing an array of numbers.
+     //
+     // OpenGL is operates on one buffer at a time. We tell it what buffer to
+     // use, then we can do a sequence of operations on that buffer.
+     let points_buffer = gl.createBuffer();
+     gl.bindBuffer(gl.ARRAY_BUFFER, points_buffer);
+     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(points), gl.DYNAMIC_DRAW);
+
+     // This is our actual vertex data.
+     let vao = gl.createVertexArray();
+     gl.bindVertexArray(vao);
+
+     // Turn a flat array of floats into an array of 2-item vectors.
+     let pal = gl.getAttribLocation(pgm, "posn");
+     gl.enableVertexAttribArray(pal);
+     gl.vertexAttribPointer(pal, 2, gl.FLOAT, false, 0, 0);
+
+     // A "uniform" lets us specifiy a single value for all instances
+     // of a shader program.
+     let color = gl.getUniformLocation(pgm, "color_in");
+     gl.uniform4f(color, 0.5, pulse, 1.0, 1.0);
+
+     // Map normalized coordinates to the screen.
+     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+     gl.clearColor(0.0, 0.0, 0.0, 1.0);
+     gl.clear(gl.COLOR_BUFFER_BIT);
+
+     // Draw the array of vertices one triangle.
+     // How do we draw two triangles?
+     gl.bindVertexArray(vao);
+     gl.drawArrays(gl.TRIANGLES, 0, 3);
+   }
+
+   window.addEventListener("load", main);
+  </script>
+</body>
+</html>
