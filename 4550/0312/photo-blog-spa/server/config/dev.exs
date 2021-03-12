@@ -1,27 +1,31 @@
 use Mix.Config
 
+# Configure your database
+config :photo_blog, PhotoBlog.Repo,
+  username: "photo_blog",
+  password: "uzae7aiw1eeV",
+  database: "photo_blog_dev",
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :hangman, HangmanWeb.Endpoint,
+config :photo_blog, PhotoBlogWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
-    ]
-  ]
+  watchers: []
 
-
+config :cors_plug,
+  origin: ["http://localhost:3000"],
+  max_age: 86400,
+  methods: ["GET", "POST", "PATCH", "DELETE"]
 
 # ## SSL Support
 #
@@ -48,13 +52,13 @@ config :hangman, HangmanWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :hangman, HangmanWeb.Endpoint,
+config :photo_blog, PhotoBlogWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/hangman_web/(live|views)/.*(ex)$",
-      ~r"lib/hangman_web/templates/.*(eex)$"
+      ~r"lib/photo_blog_web/(live|views)/.*(ex)$",
+      ~r"lib/photo_blog_web/templates/.*(eex)$"
     ]
   ]
 

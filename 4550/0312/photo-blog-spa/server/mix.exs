@@ -1,9 +1,9 @@
-defmodule Hangman.MixProject do
+defmodule PhotoBlog.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :hangman,
+      app: :photo_blog,
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,7 +19,7 @@ defmodule Hangman.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Hangman.Application, []},
+      mod: {PhotoBlog.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -34,6 +34,9 @@ defmodule Hangman.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.5.7"},
+      {:phoenix_ecto, "~> 4.1"},
+      {:ecto_sql, "~> 3.4"},
+      {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.4"},
@@ -54,7 +57,10 @@ defmodule Hangman.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "cmd npm install --prefix assets"]
+      setup: ["deps.get", "ecto.setup"],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end
 end
