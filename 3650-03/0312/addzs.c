@@ -10,8 +10,8 @@ main(int _ac, char* _av[])
     int* ys = malloc(NN * sizeof(int));
     int* zs = malloc(NN * sizeof(int));
 
-    // How much RAM does each array
-    // take?  2GB
+    // How much space does each array
+    // take up in RAM? 2 GB
 
     for (long ii = 0; ii < NN; ++ii) {
         xs[ii] = ii;
@@ -19,13 +19,12 @@ main(int _ac, char* _av[])
         zs[ii] = 0;
     }
 
-    // How long does this loop take?
     for (long ii = 0; ii < NN; ++ii) {
         zs[ii] = xs[ii] + ys[ii];
     }
 
-    printf("%d\n", zs[1024]);
-    printf("%d\n", zs[NN - 4]);
+    printf("%d\n", xs[1024]);
+    printf("%d\n", xs[NN - 4]);
 
     free(zs);
     free(ys);
