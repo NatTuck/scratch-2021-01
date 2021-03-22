@@ -225,7 +225,110 @@ In users/user.ex:
 
 # More stuff: Photo Uploads!
 
-TODO: This
+```
+// Feed.js
+import { Link } from 'react-router-dom';
+...
+      <h2>Feed</h2>
+      <p><Link to="/posts/new">New Post</Link></p>
+```
+
+```
+// App.js
+import PostNew from './Posts/New';
+...
+        <Route path="/posts/new">
+          <PostNew />
+        </Route>
+```
+
+Now we need to create Posts/New.js:
+
+```
+import { Row, Col, Form, Button } from 'react-bootstrap';
+import { useState } from 'react'
+
+export default function PostsNew() {
+  let [post, setPost] = useState({});
+
+  function onSubmit(ev) {
+    ev.preventDefault();
+    console.log(ev);
+    console.log(post);
+  }
+
+  function updatePhoto(ev) {
+    let p1 = Object.assign({}, post);
+    p1["photo"] = ev.target.files[0];
+    setPost(p1);
+  }
+
+  function updateBody(ev) {
+    let p1 = Object.assign({}, post);
+    p1["body"] = ev.target.value;
+    setPost(p1);
+  }
+
+  // Note: File input can't be a controlled input.
+  return (
+    <Row>
+      <Col>
+        <h2>New Post</h2>
+        <Form onSubmit={onSubmit}>
+          <Form.Group>
+            <Form.Label>Photo</Form.Label>
+            <Form.Control type="file" onChange={updatePhoto} />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Body</Form.Label>
+            <Form.Control as="textarea"
+                          rows={4}
+                          onChange={updateBody}
+                          value={post.body} />
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Save
+          </Button>
+        </Form>
+      </Col>
+    </Row>
+  );
+}
+```
+
+Ok, now let's update it to actually do stuff:
+
+```
+import { create_post } from '../api';
+...
+  function onSubmit(ev) {
+    ...
+    create_post(post);
+```
+
+So we need create_post in api.js:
+
+```
+export function create_post(post) {
+  let data = new FormData();
+  data.append("post[photo]", post.photo);
+  data.append("post[body]", post.body);
+  fetch("http://localhost:4000/api/v1/posts", {
+    method: 'POST',
+    // Fetch will handle reading the file object and
+    // submitting this as a multipart/form-data request.
+    body: data,
+  }).then((resp) => {
+    console.log(resp);
+  });
+}
+```
+
+More stuff to do;
+
+ * Hide "new post" unless logged in.
+ * Copy over RequireAuth from old app.
+ * controller: Save the photo file, get hash, save to DB.
 
 # Deep Preloads
 
