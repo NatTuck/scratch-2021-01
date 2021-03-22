@@ -76,8 +76,13 @@ Thoughts:
    some external event to occur.
  - We don't need parallelism - we can use a sequential event loop.
 
-Demo: show javascript/sample.html
+JavaScript in the browser works as follows:
 
+ - The JavaScript runtime sits in a loop, running jobs as they occur.
+ - As an HTML page loads, each "script" tag is a job. These are scheduled to run
+   in order.
+   - Yes, external scripts are guaranteed to run in source order.
+ - These script tags can schedule both events and event handlers.
 
 ## Plan B: Eliminate Shared Data
 
