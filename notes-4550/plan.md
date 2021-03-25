@@ -1,5 +1,5 @@
 
-# Upcoming topics
+# Mostly Past Topics
 
 Week 5:
  - HW: Client-Server Game
@@ -24,3 +24,29 @@ Week 9:
 
  - Continue React / Redux / Phoenix SPA
  - Password security before HW09
+
+# End of Semester
+
+Week 10:
+
+ - Finishing SPA
+ - Testing photo-blog-spa
+
+Week 11:
+
+ - Canvas; WASM
+ - Distributed Elixir
+ 
+Week 12:
+
+ - Ethics
+ - Wrap-Up
+
+Remaining topics:
+
+ - Canvas
+ - WASM
+ - NOSQL
+ - Distributed Elixir
+ - Testing
+
