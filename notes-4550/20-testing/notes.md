@@ -32,7 +32,24 @@ want to make sure our Elixir and JS code are tested together.
 
 ## Testing Elixir Code
 
+ * repo: git@github.com:NatTuck/photo-blog-spa.git
+ * start branch: 08-final-state 
+ * end branch: 09-tests 
 
+### Setting Up for Tests
+
+First, we need to copy the DB login info from 
+config/dev.exs to config/test.exs
+
+Now we can setup and run the tests:
+
+```
+server$ MIX_ENV=test mix ecto.reset
+server$ mix test
+```
+
+And... we're running a bunch of automatically generated tests, which are
+mostly failures.
 
 ### Simple Unit Tests
 
@@ -42,7 +59,14 @@ Elixir makes that easier in general because it's a functional language and so
 most functions are pure: to test them you just need to verify that the output is
 as expected for a selection of inputs.
 
+We can test simple functions by directly using the ExUnit library, as we
+saw in the HW04 starter code:
 
+ - https://github.com/NatTuck/cs4550-hw04/
+ - /test/practice/practice_test.exs
+
+We don't have much for simple, pure functions in photo-blog, so we're not going
+to try to force it.
 
 ### Context Module Unit Tests
 
@@ -61,7 +85,7 @@ follows:
  * This allows multiple tests to run concurrently - since transactions are
    isolated, different tests won't see each other's changes.
 
-There's one more complicaton: Fixtures
+There's one more complication: Fixtures
 
 Some functionality can be tested in isolation. To test inserting a User, you can
 construct a User, insert it, and then verify that it was inserted correctly.
@@ -78,11 +102,14 @@ exactly three submissions to two courses, that user must appear in the seed
 data. Worse, as the tests change it's hard to keep track of which tests depend
 on that particular set of records.
 
-An alternative is to programatically generate records that are needed for tests
+#### Factories
+
+An alternative is to use code to generate records that are needed for tests
 using a "factory" module. Inkfish uses a combination of these techniques, with
 some pre-seeded data and the rest created using a factory module.
 
- * Show apps/inkfish/test/support/factory.ex
+ * https://github.com/NatTuck/inkfish
+ * /test/support/factory.ex
 
 Let's look specifically at "assignments":
 
@@ -119,6 +146,144 @@ Looking at .../assignments\_test.exs:
 This assumes that the update function correctly returns the new value. If we're
 a little less trusting, we might want to refetch the item and check it.
 
+#### Let's Just Use Seeds and Fixtures
+
+Back in photo-blog-spa, let's fix some tests.
+
+Dozens of failed tests is too many, let's focus on one set of tests:
+
+```
+$ mix test test/photo_blog/users_test.exs
+```
+
+All of the user tests fail. Let's open up that file and fix some.
+
+First test is: "list_users/0 returns all users"
+
+Let's run just that one with
+
+```
+$ mix test test/photo_blog/users_test.exs:XX # XX is line number
+```
+
+That fails on the user fixture function, which should insert one
+valid user into the DB.
+
+```
+    @valid_attrs %{name: "carol", password: "password1"}
+    @update_attrs %{name: "dave", password: "password2"}
+    @invalid_attrs %{name: "erin", password: "goat"}
+
+    def hash_password(attrs) do
+      hash = Argon2.hash_pwd_salt(attrs[:password])
+      Map.put(attrs, "password_hash", hash)
+    end
+
+    def user_fixture(attrs \\ %{}) do
+      {:ok, user} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> hash_password()
+        |> Users.create_user()
+
+      user
+    end
+```
+
+Running that immediately exposes some bugs in our user.ex module:
+
+```
+defmodule PhotoBlog.Users.User do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "users" do
+    field :name, :string
+    field :password_hash, :string
+    field :password, :string, virtual: true
+
+    has_many :posts, PhotoBlog.Posts.Post
+    has_many :comments, PhotoBlog.Comments.Comment
+    has_many :votes, PhotoBlog.Votes.Vote
+
+    timestamps()
+  end
+
+  @doc false
+  def changeset(user, attrs) do
+    password = attrs["password"]
+    user
+    |> cast(attrs, [:name, :password])
+    |> validate_password
+    |> hash_password
+    |> validate_required([:name, :password_hash])
+  end
+
+  def hash_password(cset) do
+    pass = get_field(cset, :password)
+    if pass do
+      change(cset, Argon2.add_hash(pass))
+    else
+      cset
+    end
+  end
+
+  def validate_password(cset) do
+    pass = get_field(cset, :password)
+    if pass && String.length(pass) < 8 do
+      add_error(cset, :password, "too short")
+    else
+      cset
+    end
+  end
+end
+```
+
+And that then lets the test fail because we don't see the seeds. Let's
+update the test to be more accurate:
+
+```
+    test "list_users/0 returns all users" do
+      user = user_fixture()
+      names = Users.list_users() |> Enum.map(&(&1.name))
+      assert Enum.member?(names, "carol")
+      assert Enum.member?(names, "alice")
+    end
+```
+
+Next test: "get_user!/1 returns the user with given id" 
+
+ - Run it
+ - Fails on "password", since that doesn't actually get stored
+   in the DB.
+ - Need a helper function to normalize users. 
+
+```
+    def norm(%User{} = user) do
+      Map.drop(user, [:password])
+    end
+    ...
+    test "get_user!/1 returns the user with given id" do
+      user = user_fixture()
+      assert norm(Users.get_user!(user.id)) == norm(user)
+    end
+```
+
+Next test looks obviously wrong, so let's fix it.
+
+```
+    test "create_user/1 with valid data creates a user" do
+      assert {:ok, %User{} = user} = Users.create_user(@valid_attrs)
+      assert user.name == "carol"
+      assert Argon2.check_pass(user, "password1")
+    end
+```
+
+Next test, "create_user/1 with invalid data returns error changeset",
+should correctly fail.
+
+ * Fix the rest of the users tests in class.
+
 ### Controller Tests
 
 Unit tests verify that single functions are correct, but we also want to make
@@ -134,22 +299,35 @@ verify that the response is correct.
 Controller actions may modify the database, so these tests are again performed
 in a transaction so the changes can be reverted when they're done.
 
-Let's look at .../assignment_controller.ex:
+Let's look at .../session_controller.ex
 
- - One action: show
- - This is for normal users, that's the only available action.
- - To show a user an assignment, we first need to get:
-   - The assignment
-   - The user's submissions
-   - The user's team
- - Then we can render the template.
+ - One action: create
+ - This simply serves to get a session token.
 
-To test this, let's look at .../assignment\_controller_test.ex:
+To test this, let's create a test for the session controller:
 
- - First we create an assignment.
- - Then we login as a user (by faking a sesison)
- - Then we GET the assignment's path.
- - This tests the router, plugs, controller, referenced contexts, and templates.
+```
+# test/photo_blog_web/controllers/session_controller_test.exs
+defmodule PhotoBlogWeb.SessionControllerTest do
+  use PhotoBlogWeb.ConnCase
+
+  describe "create session" do
+    test "returns token when login valid", %{conn: conn} do
+      login = %{"name" => "alice", "password" => "test1"}
+      conn = post(conn, Routes.session_path(conn, :create), login)
+      session = json_response(conn, 201)["session"]
+      assert session["name"] == "alice"
+      assert String.length(session["token"]) > 10
+    end
+
+    test "returns error when login bad", %{conn: conn} do
+      login = %{"name" => "alice", "password" => "bad"}
+      conn = post(conn, Routes.session_path(conn, :create), login)
+      assert json_response(conn, 401)["error"] == "fail"
+    end
+  end
+end
+```
 
 Do we need context module unit tests if we have controller tests?
 
@@ -193,7 +371,7 @@ Properties:
 Phoenix apps don't come with this test type built in, but it's provided by the
 "phoenix_integration" library.
 
-Example in .../integration/request\_reg\_test.exs:
+Example in Inkfish, at ```test/inkfish_web/integration/request_reg_test.exs```
 
  - Bob is the instructor; Gail isn't registered. 
  - First we log in as gail and make the request.
@@ -228,7 +406,7 @@ found documentation to get it working with Firefox faster.
 Before we can run this kind of test, we need to set up the mechanism that
 actually automates the browser. A common tool for that is Selenium.
 
-Let's take a look at .../test/selenium.sh:
+Let's take a look at (Inkfish) .../test/scripts/selenium.sh:
 
  - This script downloads two files.
  - Selenium-server is the program that handles automating a browser.
@@ -264,10 +442,7 @@ Looking through the test code, there's a bunch going on:
 
 ## Testing JavaScript code
 
-For this section:
-
- * App is lens: https://github.com/NatTuck/lens
- * Branch: spa5-jest-tests
+For this section, we're over in /web-ui.
 
 With selenium popping up Firefox instances we can test all of our code,
 including our JavaScript. But that's expensive both in effort and test runtime,
@@ -283,6 +458,9 @@ Steps to get testing set up:
  - Create a test command in our package.json (show package.json).
 
 Then we can run our JS tests with:
+
+TODO: FIXME HERE
+
 
 ```
 (from our assets directory)
