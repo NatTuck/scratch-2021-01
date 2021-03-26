@@ -442,7 +442,9 @@ Looking through the test code, there's a bunch going on:
 
 ## Testing JavaScript code
 
-For this section, we're over in /web-ui.
+For this section: https://github.com/NatTuck/lens
+
+Checkout spa5-jest-tests
 
 With selenium popping up Firefox instances we can test all of our code,
 including our JavaScript. But that's expensive both in effort and test runtime,
@@ -452,15 +454,14 @@ That means pulling in a JavaScript testing library.
 
 I'm going to show examples using Jest, which seems to be reasonably popular.
 
+Jest is set up by default with create-react-app.
+
 Steps to get testing set up:
 
  - Install Jest and whatever testing libraries (with npm --save-dev).
  - Create a test command in our package.json (show package.json).
 
 Then we can run our JS tests with:
-
-TODO: FIXME HERE
-
 
 ```
 (from our assets directory)
