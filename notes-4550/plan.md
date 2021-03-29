@@ -34,19 +34,22 @@ Week 10:
 
 Week 11:
 
- - Canvas; WASM
- - Distributed Elixir
+ - Security; 2D Canvas
+ - WASM; 3D Canvas
  
 Week 12:
 
  - Ethics
- - Wrap-Up
-
-Remaining topics:
-
- - Canvas
- - WASM
- - NOSQL
  - Distributed Elixir
- - Testing
+
+Week 13:
+
+ - Wrap-Up
+ - Presentation Questions
+
+Week 14:
+
+ - Presentation Questions
+
+
 
