@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Canvas Demo</title>
+  </head>
+  <body>
+    <h1>Canvas Example</h1>
+
+    <p>
+      <button id="btn">Button</button>
+    </p>
+
+    <canvas id="demo" width="800" height="600">
+      <p>this will show if browser doesn't
+        canvas.</p>
+    </canvas>
+
+    <script>
+     let canvas = document.getElementById('demo');
+     let ctx = canvas.getContext('2d');
+
+     let ww = 7;
+
+     function draw() {
+       ctx.clearRect(0, 0, 800, 600);
+
+       let box = new Path2D();
+       box.moveTo(50, 50);
+       box.lineTo(50, 550);
+       box.lineTo(750, 550);
+       box.lineTo(750, 50);
+       box.closePath();
+
+       ctx.fillStyle = "blue";
+       ctx.fill(box);
+
+       let tri = new Path2D();
+       tri.moveTo(400, 100);
+       tri.quadraticCurveTo(600, 200, 700, 500);
+       tri.quadraticCurveTo(400, 400, 100, 500);
+       tri.quadraticCurveTo(200, 100, 400, 100);
+
+       ctx.strokeStyle = "black";
+       ctx.lineWidth = ww;
+       ctx.stroke(tri);
+     }
+
+     draw();
+
+     let btn = document.getElementById('btn');
+     btn.addEventListener("click", () => {
+       console.log("click");
+       ww = (ww + 5) % 20;
+       draw();
+     });
+    </script>
+  </body>
+</html>
