@@ -1,7 +1,3 @@
----
-layout: default
----
-
 ## First: Project Questions?
 
 Presentation Q&A
